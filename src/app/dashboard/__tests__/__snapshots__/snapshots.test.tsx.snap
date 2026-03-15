@@ -1,0 +1,612 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Dashboard Snapshots Admin Dashboard Page should match snapshot for admin dashboard 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      Admin Dashboard
+    </header>
+    <aside>
+      <nav
+        role="navigation"
+      >
+        Admin Menu
+      </nav>
+    </aside>
+    <main>
+      <table>
+        <thead>
+          <tr>
+            <th>
+              User
+            </th>
+            <th>
+              Role
+            </th>
+            <th>
+              Status
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              user1
+            </td>
+            <td>
+              user
+            </td>
+            <td>
+              active
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <footer>
+      © 2025 License Manager
+    </footer>
+  </div>
+</div>
+`;
+
+exports[`Dashboard Snapshots Admin Dashboard Page should match snapshot with user table: user-table 1`] = `
+<table>
+  <thead>
+    <tr>
+      <th>
+        User
+      </th>
+      <th>
+        Role
+      </th>
+      <th>
+        Status
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        user1
+      </td>
+      <td>
+        user
+      </td>
+      <td>
+        active
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;
+
+exports[`Dashboard Snapshots Dashboard Accessibility should match snapshot for semantic HTML: semantic-structure 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      Dashboard Header
+    </header>
+    <nav
+      role="navigation"
+    >
+      Dashboard Navigation
+    </nav>
+    <main>
+      <div
+        data-testid="stat-card"
+      >
+        <h3>
+          Total Users
+        </h3>
+        <p>
+          150
+        </p>
+      </div>
+      <div
+        data-testid="stat-card"
+      >
+        <h3>
+          Active Licenses
+        </h3>
+        <p>
+          180
+        </p>
+      </div>
+    </main>
+    <footer>
+      © 2025 License Manager
+    </footer>
+  </div>
+</div>
+`;
+
+exports[`Dashboard Snapshots Dashboard Components should match snapshot for settings forms: profile-form 1`] = `
+<form>
+  <input
+    placeholder="Full Name"
+    type="text"
+  />
+  <input
+    placeholder="Email"
+    type="email"
+  />
+  <button
+    type="submit"
+  >
+    Update Profile
+  </button>
+</form>
+`;
+
+exports[`Dashboard Snapshots Dashboard Components should match snapshot for stat cards: stat-card 1`] = `
+<div
+  data-testid="stat-card"
+>
+  <h3>
+    Total Users
+  </h3>
+  <p>
+    150
+  </p>
+</div>
+`;
+
+exports[`Dashboard Snapshots Dashboard Components should match snapshot for user table: user-table 1`] = `
+<table>
+  <thead>
+    <tr>
+      <th>
+        User
+      </th>
+      <th>
+        Role
+      </th>
+      <th>
+        Status
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        user1
+      </td>
+      <td>
+        user
+      </td>
+      <td>
+        active
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;
+
+exports[`Dashboard Snapshots Dashboard Layout Structure should match snapshot for header structure: header 1`] = `
+<header
+  role="banner"
+>
+  Dashboard Header
+</header>
+`;
+
+exports[`Dashboard Snapshots Dashboard Layout Structure should match snapshot for main content area: main-content 1`] = `
+<main>
+  <div
+    data-testid="stat-card"
+  >
+    <h3>
+      Total Users
+    </h3>
+    <p>
+      150
+    </p>
+  </div>
+  <div
+    data-testid="stat-card"
+  >
+    <h3>
+      Active Licenses
+    </h3>
+    <p>
+      180
+    </p>
+  </div>
+</main>
+`;
+
+exports[`Dashboard Snapshots Dashboard Layout Structure should match snapshot for navigation structure: navigation 1`] = `
+<nav
+  role="navigation"
+>
+  Admin Menu
+</nav>
+`;
+
+exports[`Dashboard Snapshots Dashboard Responsive Design should render layout on desktop viewport: desktop-layout 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      Dashboard Header
+    </header>
+    <nav
+      role="navigation"
+    >
+      Dashboard Navigation
+    </nav>
+    <main>
+      <div
+        data-testid="stat-card"
+      >
+        <h3>
+          Total Users
+        </h3>
+        <p>
+          150
+        </p>
+      </div>
+      <div
+        data-testid="stat-card"
+      >
+        <h3>
+          Active Licenses
+        </h3>
+        <p>
+          180
+        </p>
+      </div>
+    </main>
+    <footer>
+      © 2025 License Manager
+    </footer>
+  </div>
+</div>
+`;
+
+exports[`Dashboard Snapshots Dashboard Responsive Design should render layout on mobile viewport: mobile-layout 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      User Dashboard
+    </header>
+    <main>
+      <section
+        aria-label="profile"
+      >
+        <h2>
+          User Profile
+        </h2>
+        <p>
+          Email: test@example.com
+        </p>
+      </section>
+      <section
+        aria-label="licenses"
+      >
+        <h2>
+          My Licenses
+        </h2>
+        <div
+          data-testid="license-item"
+        >
+          LIC-001
+        </div>
+      </section>
+    </main>
+    <footer>
+      © 2025 License Manager
+    </footer>
+  </div>
+</div>
+`;
+
+exports[`Dashboard Snapshots Dashboard Responsive Design should render layout on tablet viewport: tablet-layout 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      Admin Dashboard
+    </header>
+    <aside>
+      <nav
+        role="navigation"
+      >
+        Admin Menu
+      </nav>
+    </aside>
+    <main>
+      <table>
+        <thead>
+          <tr>
+            <th>
+              User
+            </th>
+            <th>
+              Role
+            </th>
+            <th>
+              Status
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              user1
+            </td>
+            <td>
+              user
+            </td>
+            <td>
+              active
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <footer>
+      © 2025 License Manager
+    </footer>
+  </div>
+</div>
+`;
+
+exports[`Dashboard Snapshots Dashboard State Variations should match snapshot for empty state: empty-state 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      Dashboard
+    </header>
+    <main>
+      <p>
+        No data available
+      </p>
+    </main>
+  </div>
+</div>
+`;
+
+exports[`Dashboard Snapshots Dashboard State Variations should match snapshot for error state: error-state 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      Dashboard
+    </header>
+    <main
+      role="alert"
+    >
+      <p>
+        Error loading dashboard data
+      </p>
+      <button>
+        Retry
+      </button>
+    </main>
+  </div>
+</div>
+`;
+
+exports[`Dashboard Snapshots Dashboard State Variations should match snapshot for loading state: loading-state 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      Dashboard
+    </header>
+    <main>
+      <div
+        aria-busy="true"
+      >
+        Loading...
+      </div>
+    </main>
+  </div>
+</div>
+`;
+
+exports[`Dashboard Snapshots Main Dashboard Page should match snapshot for main dashboard 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      Dashboard Header
+    </header>
+    <nav
+      role="navigation"
+    >
+      Dashboard Navigation
+    </nav>
+    <main>
+      <div
+        data-testid="stat-card"
+      >
+        <h3>
+          Total Users
+        </h3>
+        <p>
+          150
+        </p>
+      </div>
+      <div
+        data-testid="stat-card"
+      >
+        <h3>
+          Active Licenses
+        </h3>
+        <p>
+          180
+        </p>
+      </div>
+    </main>
+    <footer>
+      © 2025 License Manager
+    </footer>
+  </div>
+</div>
+`;
+
+exports[`Dashboard Snapshots Main Dashboard Page should match snapshot with stat cards: dashboard-stats 1`] = `
+<main>
+  <div
+    data-testid="stat-card"
+  >
+    <h3>
+      Total Users
+    </h3>
+    <p>
+      150
+    </p>
+  </div>
+  <div
+    data-testid="stat-card"
+  >
+    <h3>
+      Active Licenses
+    </h3>
+    <p>
+      180
+    </p>
+  </div>
+</main>
+`;
+
+exports[`Dashboard Snapshots User Dashboard Page should match snapshot for user dashboard 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      User Dashboard
+    </header>
+    <main>
+      <section
+        aria-label="profile"
+      >
+        <h2>
+          User Profile
+        </h2>
+        <p>
+          Email: test@example.com
+        </p>
+      </section>
+      <section
+        aria-label="licenses"
+      >
+        <h2>
+          My Licenses
+        </h2>
+        <div
+          data-testid="license-item"
+        >
+          LIC-001
+        </div>
+      </section>
+    </main>
+    <footer>
+      © 2025 License Manager
+    </footer>
+  </div>
+</div>
+`;
+
+exports[`Dashboard Snapshots User Dashboard Page should match snapshot with licenses section: user-licenses 1`] = `
+<section
+  aria-label="licenses"
+>
+  <h2>
+    My Licenses
+  </h2>
+  <div
+    data-testid="license-item"
+  >
+    LIC-001
+  </div>
+</section>
+`;
+
+exports[`Dashboard Snapshots User Settings Page should match snapshot for user settings page 1`] = `
+<div>
+  <div>
+    <header
+      role="banner"
+    >
+      Settings
+    </header>
+    <main>
+      <section
+        aria-label="profile-settings"
+      >
+        <h2>
+          Profile Settings
+        </h2>
+        <form>
+          <input
+            placeholder="Full Name"
+            type="text"
+          />
+          <input
+            placeholder="Email"
+            type="email"
+          />
+          <button
+            type="submit"
+          >
+            Update Profile
+          </button>
+        </form>
+      </section>
+      <section
+        aria-label="password-settings"
+      >
+        <h2>
+          Change Password
+        </h2>
+        <form>
+          <input
+            placeholder="Current Password"
+            type="password"
+          />
+          <input
+            placeholder="New Password"
+            type="password"
+          />
+          <button
+            type="submit"
+          >
+            Change Password
+          </button>
+        </form>
+      </section>
+      <section
+        aria-label="2fa-settings"
+      >
+        <h2>
+          Two-Factor Authentication
+        </h2>
+        <button>
+          Enable 2FA
+        </button>
+      </section>
+    </main>
+    <footer>
+      © 2025 License Manager
+    </footer>
+  </div>
+</div>
+`;
