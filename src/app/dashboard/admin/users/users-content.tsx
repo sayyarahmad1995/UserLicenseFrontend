@@ -3,8 +3,10 @@
 import { useState, useEffect, useRef, useCallback, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLogout, useCurrentUser } from '@/hooks/use-auth';
+import { useCurrentUser } from '@/hooks/use-auth';
+import { useLogoutDialog } from '@/hooks/use-logout-dialog';
 import { useUsers, useUpdateUserStatus, useDeleteUser, useCreateUser } from '@/hooks/use-users';
+import { LogoutDialog } from '@/components/logout-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -46,7 +48,7 @@ export default function UsersContent() {
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const { data: user, isLoading: userLoading } = useCurrentUser();
-  const logoutMutation = useLogout();
+  const { open, setOpen, openLogoutDialog } = useLogoutDialog();
   const updateStatusMutation = useUpdateUserStatus();
   const deleteUserMutation = useDeleteUser();
   const createUserMutation = useCreateUser();
@@ -166,11 +168,7 @@ export default function UsersContent() {
   };
 
   const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        router.push('/login');
-      },
-    });
+    openLogoutDialog();
   };
 
   const handleStatusChange = (userId: number, newStatus: UserStatus) => {
@@ -317,10 +315,9 @@ export default function UsersContent() {
               </Dialog>
               <Button
                 onClick={handleLogout}
-                disabled={logoutMutation.isPending}
                 variant="outline"
               >
-                {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
+                Logout
               </Button>
             </div>
           </div>
@@ -537,6 +534,9 @@ export default function UsersContent() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Logout Dialog */}
+      <LogoutDialog open={open} onOpenChange={setOpen} />
     </div>
   );
 }

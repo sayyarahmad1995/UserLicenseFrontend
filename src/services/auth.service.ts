@@ -54,9 +54,20 @@ export const authService = {
   },
 
   async getCurrentUser(): Promise<User> {
-    const response = await apiClient.get<any>('/auth/me');
-    // Go-Chi may return data directly or wrapped
-    return response.data || response.user || response;
+    try {
+      const response = await apiClient.get<any>('/auth/me');
+      // Ensure we have a valid user object
+      if (!response) {
+        throw new Error('Invalid user data');
+      }
+      return response.data || response.user || response;
+    } catch (error: any) {
+      // Handle 401 gracefully - user is not authenticated
+      if (error.response?.status === 401) {
+        throw new Error('Unauthorized');
+      }
+      throw error;
+    }
   },
 
   async getNotificationPreferences(): Promise<NotificationPreferences> {

@@ -1,13 +1,15 @@
 'use client';
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Zap, Shield, BarChart3 } from "lucide-react";
+import React, { ReactNode } from 'react';
 
-export default function Home() {
+interface AuthPageWrapperProps {
+  children: ReactNode;
+}
+
+export function AuthPageWrapper({ children }: AuthPageWrapperProps) {
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-950 via-blue-900 to-blue-950">
-      {/* SVG Background - Same animated background as auth pages */}
+    <div className="min-h-screen relative overflow-hidden bg-white">
+      {/* SVG Background - Renders once and persists across auth pages */}
       <svg
         className="absolute inset-0 w-full h-full"
         viewBox="0 0 1200 800"
@@ -52,6 +54,7 @@ export default function Home() {
           <animate attributeName="cx" from="100" to="150" dur="7s" repeatCount="indefinite" />
         </circle>
 
+        {/* Additional animated circles */}
         <circle cx="150" cy="750" r="100" fill="#93c5fd" opacity="0.15" filter="url(#blur)">
           <animate attributeName="cy" from="750" to="700" dur="9s" repeatCount="indefinite" />
           <animate attributeName="r" from="100" to="140" dur="9s" repeatCount="indefinite" />
@@ -100,6 +103,7 @@ export default function Home() {
           <animate attributeName="r" from="100" to="150" dur="20s" repeatCount="indefinite" />
         </circle>
 
+        {/* Decorative shapes */}
         <path
           d="M 1200 0 Q 1100 100, 1050 200 T 1000 400"
           stroke="#60a5fa"
@@ -138,75 +142,8 @@ export default function Home() {
       </svg>
 
       {/* Content overlay */}
-      <div className="relative z-10 min-h-screen flex flex-col">
-        {/* Navigation */}
-        <nav className="flex justify-between items-center px-8 py-6">
-          <h2 className="text-2xl font-bold text-white">EazeCad</h2>
-          <div className="flex gap-4">
-            <Button asChild className="bg-gradient-to-r from-cyan-400 to-blue-400 hover:from-cyan-300 hover:to-blue-300 text-blue-900 font-semibold transition-all duration-200 transform hover:scale-105">
-              <Link href="/login">Sign In</Link>
-            </Button>
-            <Button asChild className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold transition-all duration-200 transform hover:scale-105">
-              <Link href="/register">Get Started</Link>
-            </Button>
-          </div>
-        </nav>
-
-        {/* Hero Section */}
-        <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
-          <div className="text-center space-y-8 max-w-4xl animate-fade-in">
-            <div className="space-y-4">
-              <h1 className="text-6xl md:text-7xl font-bold text-white mb-4 leading-tight">
-                License Management
-                <br />
-                <span className="bg-gradient-to-r from-blue-200 to-cyan-200 bg-clip-text text-transparent">
-                  Made Simple
-                </span>
-              </h1>
-              <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-                Powerful user and license management system. Control, monitor, and optimize your software licenses with an intuitive admin dashboard.
-              </p>
-            </div>
-
-            {/* Feature Highlights */}
-            <div className="grid md:grid-cols-3 gap-6 mt-12 mb-12">
-              <div className="backdrop-blur-md bg-white/10 rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all">
-                <Shield className="w-8 h-8 text-blue-200 mx-auto mb-3" />
-                <h3 className="text-white font-semibold mb-2">Secure Authentication</h3>
-                <p className="text-blue-100 text-sm">Enterprise-grade security with email verification and password recovery.</p>
-              </div>
-              <div className="backdrop-blur-md bg-white/10 rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all">
-                <BarChart3 className="w-8 h-8 text-blue-200 mx-auto mb-3" />
-                <h3 className="text-white font-semibold mb-2">License Analytics</h3>
-                <p className="text-blue-100 text-sm">Track usage, monitor licenses, and generate detailed reports effortlessly.</p>
-              </div>
-              <div className="backdrop-blur-md bg-white/10 rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all">
-                <Zap className="w-8 h-8 text-blue-200 mx-auto mb-3" />
-                <h3 className="text-white font-semibold mb-2">Instant Management</h3>
-                <p className="text-blue-100 text-sm">Real-time user management and license distribution at your fingertips.</p>
-              </div>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
-                <Link href="/register" className="flex items-center gap-2">
-                  <span>Start Free Trial</span>
-                </Link>
-              </Button>
-              <Button asChild size="lg" className="bg-gradient-to-r from-cyan-400 to-blue-400 hover:from-cyan-300 hover:to-blue-300 text-blue-900 font-semibold py-3 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg">
-                <Link href="/login">Sign In</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <footer className="relative z-10 border-t border-white/10 bg-white/5 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto px-8 py-8 text-center text-blue-100 text-sm">
-            <p>© 2026 EazeCad. All rights reserved. | Protected by industry-standard security</p>
-          </div>
-        </footer>
+      <div className="relative z-10 flex items-center justify-center min-h-screen">
+        {children}
       </div>
     </div>
   );

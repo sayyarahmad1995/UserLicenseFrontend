@@ -4,8 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const SCROLL_KEY = 'dashboard-admin-licenses-scroll';
-import { useLogout, useCurrentUser } from '@/hooks/use-auth';
+import { useCurrentUser } from '@/hooks/use-auth';
+import { useLogoutDialog } from '@/hooks/use-logout-dialog';
 import { useLicenses, useUpdateLicenseStatus, useRevokeLicense, useCreateLicense } from '@/hooks/use-licenses';
+import { LogoutDialog } from '@/components/logout-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,8 +34,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, MoreHorizontal, RotateCcw } from 'lucide-react';
+import { Loader2, MoreHorizontal, RotateCcw, ChevronUp, ChevronDown } from 'lucide-react';
 import { LicenseStatus } from '@/types/api';
+import { toast } from 'sonner';
+
+type SortColumn = 'licenseKey' | 'userId' | 'status' | 'expiresAt' | 'activeActivations' | 'createdAt';
+type SortDirection = 'asc' | 'desc';
 
 const statusColors: Record<string, string> = {
   Active: 'bg-green-100 text-green-800',
@@ -77,7 +83,7 @@ export default function LicensesContent() {
       sessionStorage.removeItem(SCROLL_KEY);
     }
   }, [isNavigating]);
-  const logoutMutation = useLogout();
+  const { open, setOpen, openLogoutDialog } = useLogoutDialog();
   const updateStatusMutation = useUpdateLicenseStatus();
   const revokeLicenseMutation = useRevokeLicense();
   const createLicenseMutation = useCreateLicense();
@@ -86,6 +92,9 @@ export default function LicensesContent() {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [statusFilter, setStatusFilter] = useState<LicenseStatus | ''>('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortColumn, setSortColumn] = useState<SortColumn>('createdAt');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   const [revokeDialogOpen, setRevokeDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -101,6 +110,8 @@ export default function LicensesContent() {
     pageNumber,
     pageSize,
     status: statusFilter ? (statusFilter as LicenseStatus) : undefined,
+    sortColumn: sortColumn as any,
+    sortDirection,
   });
 
   // Protect page - only admins can access
@@ -113,6 +124,11 @@ export default function LicensesContent() {
 
   const handleStatusFilterChange = (value: LicenseStatus | '') => {
     setStatusFilter(value);
+    setPageNumber(1);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
     setPageNumber(1);
   };
 
@@ -132,11 +148,7 @@ export default function LicensesContent() {
   };
 
   const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        router.push('/login');
-      },
-    });
+    openLogoutDialog();
   };
 
   const handleStatusChange = (licenseId: number, newStatus: LicenseStatus) => {
@@ -185,6 +197,31 @@ export default function LicensesContent() {
   const totalCount = licensesData?.totalCount || 0;
   const licenses = licensesData?.data || [];
 
+  // Filter licenses based on search query (client-side for userId, backend handles license key)
+  const filteredLicenses = licenses.filter((license) => {
+    if (!searchQuery) return true;
+    const searchLower = searchQuery.toLowerCase();
+    const userId = license.userId?.toString() || '';
+    return userId.includes(searchLower);
+  });
+
+  // Sort handling
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+    setPageNumber(1); // Reset to first page when sorting changes
+  };
+
+  const getSortIndicator = (column: SortColumn) => {
+    if (sortColumn !== column) return null;
+    return sortDirection === 'asc' ? 
+      <ChevronUp className="inline ml-1 w-4 h-4" /> : 
+      <ChevronDown className="inline ml-1 w-4 h-4" />;
+  };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -300,10 +337,9 @@ export default function LicensesContent() {
                   </Label>
                   <Input
                     id="search"
-                    placeholder="Search..."
-                    value=""
-                    onChange={(e) => {}}
-                    disabled
+                    placeholder="Search by license key or user ID..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearchChange(e.target.value)}
                   />
                 </div>
 
@@ -356,25 +392,38 @@ export default function LicensesContent() {
                   <Table>
                     <TableHeader>
                       <TableRow className="border-b border-gray-200">
-                        <TableHead className="px-4 py-2 bg-gray-50">License Key</TableHead>
-                        <TableHead className="px-4 py-2 bg-gray-50">User ID</TableHead>
-                        <TableHead className="px-4 py-2 bg-gray-50">Status</TableHead>
-                        <TableHead className="px-4 py-2 bg-gray-50">Expires</TableHead>
-                        <TableHead className="px-4 py-2 bg-gray-50">Activations</TableHead>
-                        <TableHead className="px-4 py-2 bg-gray-50">Created</TableHead>
+                        <TableHead className="px-4 py-2 bg-gray-50 cursor-pointer hover:bg-gray-100 select-none" onClick={() => handleSort('licenseKey')}>
+                          License Key {getSortIndicator('licenseKey')}
+                        </TableHead>
+                        <TableHead className="px-4 py-2 bg-gray-50 cursor-pointer hover:bg-gray-100 select-none" onClick={() => handleSort('userId')}>
+                          User ID {getSortIndicator('userId')}
+                        </TableHead>
+                        <TableHead className="px-4 py-2 bg-gray-50 cursor-pointer hover:bg-gray-100 select-none" onClick={() => handleSort('status')}>
+                          Status {getSortIndicator('status')}
+                        </TableHead>
+                        <TableHead className="px-4 py-2 bg-gray-50 cursor-pointer hover:bg-gray-100 select-none" onClick={() => handleSort('expiresAt')}>
+                          Expires {getSortIndicator('expiresAt')}
+                        </TableHead>
+                        <TableHead className="px-4 py-2 bg-gray-50 cursor-pointer hover:bg-gray-100 select-none" onClick={() => handleSort('activeActivations')}>
+                          Activations {getSortIndicator('activeActivations')}
+                        </TableHead>
+                        <TableHead className="px-4 py-2 bg-gray-50 cursor-pointer hover:bg-gray-100 select-none" onClick={() => handleSort('createdAt')}>
+                          Created {getSortIndicator('createdAt')}
+                        </TableHead>
                         <TableHead className="px-4 py-2 bg-gray-50 text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {licenses.length > 0 ? (
-                        licenses.map((license) => (
+                      {filteredLicenses.length > 0 ? (
+                        filteredLicenses.map((license) => (
                           <TableRow key={license.id} className="border-b border-gray-200 hover:bg-gray-50">
                             <TableCell className="px-4 py-2 text-sm font-mono">
-                              <code className="text-gray-700">{truncateKey(license.key)}</code>
+                              <code className="text-gray-700">{truncateKey(license.licenseKey)}</code>
                               <div className="text-xs text-gray-500 mt-1">
                                 <button
                                   onClick={() => {
-                                    navigator.clipboard.writeText(license.key);
+                                    navigator.clipboard.writeText(license.licenseKey);
+                                    toast.success('License key copied!');
                                   }}
                                   className="text-blue-600 hover:underline"
                                 >
@@ -427,7 +476,7 @@ export default function LicensesContent() {
                                     </DropdownMenuItem>
                                   )}
                                   {license.status !== LicenseStatus.Revoked && (
-                                    <DropdownMenuItem onClick={() => handleRevoke(license.id, license.key)}>
+                                    <DropdownMenuItem onClick={() => handleRevoke(license.id, license.licenseKey)}>
                                       <RotateCcw className="h-4 w-4 mr-2" />
                                       Revoke
                                     </DropdownMenuItem>
@@ -440,7 +489,7 @@ export default function LicensesContent() {
                       ) : (
                         <TableRow>
                           <TableCell colSpan={7} className="px-4 py-4 text-center text-gray-500">
-                            No licenses found
+                            {searchQuery ? 'No licenses match your search' : 'No licenses found'}
                           </TableCell>
                         </TableRow>
                       )}
@@ -516,6 +565,9 @@ export default function LicensesContent() {
           </>
         )}
       </div>
+
+      {/* Logout Dialog */}
+      <LogoutDialog open={open} onOpenChange={setOpen} />
     </div>
   );
 }

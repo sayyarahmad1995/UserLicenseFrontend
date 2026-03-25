@@ -1,8 +1,10 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCurrentUser, useLogout } from '@/hooks/use-auth';
+import { useCurrentUser } from '@/hooks/use-auth';
+import { useLogoutDialog } from '@/hooks/use-logout-dialog';
 import { useLicenses } from '@/hooks/use-licenses';
+import { LogoutDialog } from '@/components/logout-dialog';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -42,7 +44,7 @@ export default function UserLicensesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: user, isLoading: userLoading } = useCurrentUser();
-  const logoutMutation = useLogout();
+  const { open, setOpen, openLogoutDialog } = useLogoutDialog();
 
   // Read from URL query parameters
   const pageNumber = parseInt(searchParams.get('pageIndex') || '1', 10);
@@ -54,13 +56,7 @@ export default function UserLicensesPage() {
     userId: user?.id,
   });
 
-  const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        router.push('/login');
-      },
-    });
-  };
+
 
   const handlePageSizeChange = (value: number) => {
     const params = new URLSearchParams(searchParams);
@@ -123,7 +119,7 @@ export default function UserLicensesPage() {
               <h1 className="text-3xl font-bold text-gray-900">My Licenses</h1>
               <p className="text-gray-600 mt-1">View and manage your software licenses</p>
             </div>
-            <Button variant="outline" onClick={handleLogout}>
+            <Button variant="outline" onClick={openLogoutDialog}>
               Logout
             </Button>
           </div>
@@ -221,6 +217,9 @@ export default function UserLicensesPage() {
           </div>
         )}
       </div>
+
+      {/* Logout Dialog */}
+      <LogoutDialog open={open} onOpenChange={setOpen} />
     </div>
   );
 }

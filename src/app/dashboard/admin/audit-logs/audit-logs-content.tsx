@@ -5,8 +5,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 const SCROLL_KEY = 'dashboard-admin-audit-logs-scroll';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLogout, useCurrentUser } from '@/hooks/use-auth';
+import { useCurrentUser } from '@/hooks/use-auth';
+import { useLogoutDialog } from '@/hooks/use-logout-dialog';
 import { useAuditLogs, useExportAuditLogs } from '@/hooks/use-audit-logs';
+import { LogoutDialog } from '@/components/logout-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -71,7 +73,7 @@ export default function AuditLogsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: user, isLoading: userLoading } = useCurrentUser();
-  const logoutMutation = useLogout();
+  const { open, setOpen, openLogoutDialog } = useLogoutDialog();
 
   // State for details modal
   const [selectedLog, setSelectedLog] = useState<any | null>(null);
@@ -173,11 +175,7 @@ export default function AuditLogsContent() {
   };
 
   const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        router.push('/login');
-      },
-    });
+    openLogoutDialog();
   };
 
   const handleExport = () => {
@@ -619,6 +617,9 @@ export default function AuditLogsContent() {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Logout Dialog */}
+      <LogoutDialog open={open} onOpenChange={setOpen} />
     </div>
   );
 }

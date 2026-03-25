@@ -1,17 +1,26 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useLogout, useCurrentUser } from '@/hooks/use-auth';
+import { useCurrentUser } from '@/hooks/use-auth';
+import { useLogoutDialog } from '@/hooks/use-logout-dialog';
 import { useUserLicenseStats } from '@/hooks/use-licenses';
+import { LogoutDialog } from '@/components/logout-dialog';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
 const StatCard = ({ title, value, subtitle, variant = 'default', index = 0 }: { title: string; value: string | number; subtitle?: string; variant?: 'default' | 'success' | 'warning' | 'danger'; index?: number }) => {
+  const borderColor = {
+    default: 'border-blue-200',
+    success: 'border-green-200',
+    warning: 'border-yellow-200',
+    danger: 'border-red-200',
+  }[variant];
+
   const bgColor = {
-    default: 'bg-blue-50',
-    success: 'bg-green-50',
-    warning: 'bg-yellow-50',
-    danger: 'bg-red-50',
+    default: 'bg-blue-50/50',
+    success: 'bg-green-50/50',
+    warning: 'bg-yellow-50/50',
+    danger: 'bg-red-50/50',
   }[variant];
 
   const textColor = {
@@ -22,7 +31,7 @@ const StatCard = ({ title, value, subtitle, variant = 'default', index = 0 }: { 
   }[variant];
 
   return (
-    <div className={`${bgColor} p-6 rounded-lg shadow hover:shadow-lg hover:scale-105 transition-all duration-300 animate-fade-in`}
+    <div className={`${bgColor} ${borderColor} backdrop-blur-sm border rounded-xl p-6 shadow hover:shadow-lg hover:scale-105 transition-all duration-300 animate-fade-in`}
       style={{ animationDelay: `${index * 50}ms` }}
     >
       <p className="text-sm font-medium text-gray-600">{title}</p>
@@ -34,33 +43,25 @@ const StatCard = ({ title, value, subtitle, variant = 'default', index = 0 }: { 
 
 export default function UserDashboardPage() {
   const router = useRouter();
-  const logoutMutation = useLogout();
+  const { open, setOpen, openLogoutDialog } = useLogoutDialog();
   const { data: user, isLoading: userLoading } = useCurrentUser();
   const { data: licenseStats, isLoading: statsLoading } = useUserLicenseStats();
 
-  const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        router.push('/login');
-      },
-    });
-  };
-
   if (userLoading || statsLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center animate-fade-in">
+      <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 flex items-center justify-center animate-fade-in">
         <div className="flex flex-col items-center gap-4 animate-scale-in">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-600" />
-          <p className="text-gray-600">Loading dashboard...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-white" />
+          <p className="text-white font-medium">Loading dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
-      <div className="bg-white shadow animate-fade-in">
+      <div className="backdrop-blur-md bg-white/80 border-b border-blue-100 shadow-lg animate-fade-in">
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <div className="animate-slide-in">
             <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
@@ -72,11 +73,10 @@ export default function UserDashboardPage() {
             </p>
           </div>
           <Button
-            onClick={handleLogout}
-            disabled={logoutMutation.isPending}
+            onClick={openLogoutDialog}
             variant="outline"
           >
-            {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
+            Logout
           </Button>
         </div>
       </div>
@@ -139,6 +139,9 @@ export default function UserDashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Logout Dialog */}
+      <LogoutDialog open={open} onOpenChange={setOpen} />
     </div>
   );
 }

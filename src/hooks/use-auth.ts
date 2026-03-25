@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authService } from '@/services/auth.service';
+import { apiClient } from '@/lib/api-client';
 import type { LoginRequest, RegisterRequest, NotificationPreferences } from '@/types/api';
 import { toast } from 'sonner';
 
@@ -11,6 +12,8 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: (credentials: LoginRequest) => authService.login(credentials),
     onSuccess: () => {
+      // Mark client as logged in to enable token refresh
+      apiClient.markLoggedIn();
       // Tokens are stored in HTTP-only cookies, no need to manage them manually
       toast.success('Logged in successfully');
       // Invalidate any cached queries that depend on authentication
@@ -64,8 +67,24 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: () => authService.logout(),
     onSuccess: () => {
+      // Mark client as logged out to prevent token refresh attempts
+      apiClient.markLoggedOut();
+      // Cancel all active queries immediately to prevent 401 errors
+      queryClient.cancelQueries();
+      // Invalidate current user query first before clearing all
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+      // Clear all cached queries immediately
       queryClient.clear();
       toast.success('Logged out successfully');
+    },
+    onError: (error: any) => {
+      // Even if logout fails, mark as logged out and clear cache
+      apiClient.markLoggedOut();
+      // Cancel all active queries immediately
+      queryClient.cancelQueries();
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+      queryClient.clear();
+      toast.error('Logged out');
     },
   });
 };

@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom';
 
 // Mock fetch
-global.fetch = jest.fn();
+(global.fetch as any) = (() => Promise.resolve({})) as any;
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {

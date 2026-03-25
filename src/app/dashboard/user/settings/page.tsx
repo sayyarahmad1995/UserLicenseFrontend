@@ -6,12 +6,13 @@ import {
   useCurrentUser,
   useChangePassword,
   useUpdateNotificationPreferences,
-  useLogout,
   useUpdateProfile,
   useRotateToken,
   useEmailTemplates,
   useTestEmailSend,
 } from '@/hooks/use-auth';
+import { useLogoutDialog } from '@/hooks/use-logout-dialog';
+import { LogoutDialog } from '@/components/logout-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,7 +30,7 @@ const formatDate = (dateString: string) => {
 export default function SettingsPage() {
   const router = useRouter();
   const { data: user, isLoading: userLoading } = useCurrentUser();
-  const logoutMutation = useLogout();
+  const { open, setOpen, openLogoutDialog } = useLogoutDialog();
   const changePasswordMutation = useChangePassword();
   const updateNotificationsMutation = useUpdateNotificationPreferences();
   const updateProfileMutation = useUpdateProfile();
@@ -72,13 +73,7 @@ export default function SettingsPage() {
     }
   }, [user]);
 
-  const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        router.push('/login');
-      },
-    });
-  };
+
 
   const handlePasswordChange = (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,7 +170,7 @@ export default function SettingsPage() {
               <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
               <p className="text-gray-600 mt-1">Manage your account and preferences</p>
             </div>
-            <Button variant="outline" onClick={handleLogout}>
+            <Button variant="outline" onClick={openLogoutDialog}>
               Logout
             </Button>
           </div>
@@ -570,6 +565,9 @@ export default function SettingsPage() {
           </form>
         </div>
       </div>
+
+      {/* Logout Dialog */}
+      <LogoutDialog open={open} onOpenChange={setOpen} />
     </div>
   );
 }

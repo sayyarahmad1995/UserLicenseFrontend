@@ -15,6 +15,8 @@ export const useDashboardStats = () => {
   return useQuery({
     queryKey: ['dashboardStats'],
     queryFn: () => dashboardService.getStats(),
+    staleTime: 30 * 1000, // Cache for 30 seconds to catch updates quickly
+    refetchInterval: 60 * 1000, // Auto-refetch every 60 seconds
   });
 };
 

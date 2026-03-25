@@ -18,6 +18,8 @@ export interface GetLicensesParams {
   pageSize?: number;
   status?: LicenseStatus;
   userId?: number;
+  sortColumn?: string;
+  sortDirection?: 'asc' | 'desc';
 }
 
 export interface CreateLicenseRequest {
@@ -56,6 +58,8 @@ export const licenseService = {
     if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
     if (params?.status) queryParams.append('status', params.status);
     if (params?.userId) queryParams.append('user_id', params.userId.toString());
+    if (params?.sortColumn) queryParams.append('sortColumn', params.sortColumn);
+    if (params?.sortDirection) queryParams.append('sortDirection', params.sortDirection);
     
     const url = queryParams.toString() ? `/licenses?${queryParams}` : '/licenses';
     const response = await apiClient.get<any>(url);

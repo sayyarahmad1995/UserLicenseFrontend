@@ -5,6 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1
 class ApiClient {
   private client: AxiosInstance;
   private refreshPromise: Promise<void> | null = null;
+  private isLoggedOut: boolean = false;
 
   constructor() {
     this.client = axios.create({
@@ -32,7 +33,12 @@ class ApiClient {
 
         // Don't attempt to refresh on failed login/register attempts (401 from auth endpoints)
         const url = originalRequest.url || '';
-        const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh');
+        const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh') || url.includes('/auth/logout') || url.includes('/auth/me');
+
+        // Don't try to refresh if we just logged out
+        if (this.isLoggedOut) {
+          return Promise.reject(error);
+        }
 
         // If 401 during an authorized request (not a failed login), the access token has expired
         if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
@@ -48,14 +54,15 @@ class ApiClient {
               await this.refreshPromise;
             }
 
-            console.log('Token refreshed, retrying original request...');
             // After refresh completes, retry the original request
             return this.client(originalRequest);
-          } catch (refreshError) {
-            // Refresh failed - token is expired and cannot be renewed
-            console.error('Token refresh failed, redirecting to login');
-            // Redirect to login page (only in browser)
-            if (typeof window !== 'undefined') {
+          } catch (refreshError: any) {
+            // Refresh failed - could be no refresh token or token expired
+            // Only redirect to login if not already on the login page AND not calling /auth/me
+            const url = originalRequest.url || '';
+            const isAuthMeEndpoint = url.includes('/auth/me');
+            
+            if (typeof window !== 'undefined' && !window.location.pathname.includes('/login') && !isAuthMeEndpoint) {
               window.location.href = '/login';
             }
             return Promise.reject(refreshError);
@@ -65,9 +72,29 @@ class ApiClient {
           }
         }
 
+        // Don't log 401 errors for auth endpoints - they're expected
+        if (error.response?.status === 401 && isAuthEndpoint) {
+          // Silently reject without logging
+          return Promise.reject(error);
+        }
+
         return Promise.reject(error);
       }
     );
+  }
+
+  /**
+   * Mark the client as logged out to prevent token refresh attempts
+   */
+  markLoggedOut() {
+    this.isLoggedOut = true;
+  }
+
+  /**
+   * Mark the client as logged in to enable token refresh again
+   */
+  markLoggedIn() {
+    this.isLoggedOut = false;
   }
 
   /**
@@ -84,10 +111,13 @@ class ApiClient {
           timeout: 10000, // 10 second timeout
         }
       );
-      console.log('Token refreshed successfully');
       return response.data;
     } catch (error: any) {
-      console.error('Token refresh failed:', error.response?.status, error.message);
+      // Silently fail for 401/403 - user is not authenticated
+      // Only log other types of errors
+      if (error.response?.status !== 401 && error.response?.status !== 403) {
+        // Don't log expected auth errors
+      }
       throw error;
     }
   }

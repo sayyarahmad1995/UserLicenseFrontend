@@ -33,6 +33,7 @@ export const dashboardService = {
         action: entry.action,
         description: entry.details,
         timestamp: entry.timestamp,
+        username: entry.username,
       })) as ActivityTimelineEntry[],
     } as DashboardSnapshot;
   },
@@ -78,7 +79,7 @@ export const dashboardService = {
     return response.data || response || {} as EnhancedDashboard;
   },
 
-  async getHealth(): Promise<{ status: string; database: string; redis: string }> {
+  async getHealth(): Promise<{ api_status: string; database: any; redis: any }> {
     const response = await apiClient.get<any>('/health');
     return response;
   },

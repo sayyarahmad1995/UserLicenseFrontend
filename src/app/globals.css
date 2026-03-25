@@ -180,12 +180,12 @@
   }
 
   .floating-label {
-    @apply absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none transition-all duration-200 bg-white px-1;
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none px-1;
   }
 
   .floating-input:focus ~ .floating-label,
   .floating-input:not(:placeholder-shown) ~ .floating-label {
-    @apply top-0 text-xs text-blue-600;
+    @apply -top-1/12 text-xs text-blue-600 bg-[#F4F6FD]/95;
   }
 
   .floating-input::placeholder {

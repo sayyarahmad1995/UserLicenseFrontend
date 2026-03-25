@@ -72,7 +72,7 @@ export interface KickOutUserRequest {
 // License types
 export interface License {
   id: number;
-  key: string;
+  licenseKey: string;
   userId: number;
   status: LicenseStatus;
   expiresAt: string;
@@ -221,6 +221,7 @@ export interface ActivityTimelineEntry {
   action: string;
   description: string;
   timestamp: string;
+  username?: string;
 }
 
 // Dashboard snapshot (from /dashboard endpoint)

@@ -44,6 +44,7 @@ export const useCreateLicense = () => {
     mutationFn: (data: CreateLicenseRequest) => licenseService.createLicense(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['licenses'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardStats'] });
       toast.success('License created');
     },
     onError: (error: any) => {
@@ -61,6 +62,7 @@ export const useUpdateLicenseStatus = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['licenses'] });
       queryClient.invalidateQueries({ queryKey: ['license', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardStats'] });
       toast.success('License status updated');
     },
     onError: (error: any) => {
@@ -77,6 +79,7 @@ export const useRevokeLicense = () => {
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ['licenses'] });
       queryClient.invalidateQueries({ queryKey: ['license', id] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardStats'] });
       toast.success('License revoked');
     },
     onError: (error: any) => {
@@ -142,6 +145,7 @@ export const useGenerateLicense = () => {
     mutationFn: (request: GenerateLicenseRequest) => licenseService.generateLicense(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['licenses'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardStats'] });
       toast.success('License generated successfully');
     },
     onError: (error: any) => {
@@ -158,6 +162,7 @@ export const useRevokeLicenseWithReason = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['licenses'] });
       queryClient.invalidateQueries({ queryKey: ['license', variables.licenseId] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardStats'] });
       toast.success('License revoked');
     },
     onError: (error: any) => {
@@ -214,6 +219,7 @@ export const useBulkLicenseOperation = () => {
     mutationFn: (operation: BulkLicenseOperation) => licenseService.bulkLicenseOperation(operation),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['licenses'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardStats'] });
       toast.success('Bulk operation started');
     },
     onError: (error: any) => {
