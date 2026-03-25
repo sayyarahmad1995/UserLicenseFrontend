@@ -48,4 +48,13 @@ QUICK_REFERENCE.md
 
 # typescript
 *.tsbuildinfo
+
+# Temp/Debug files
+/issues
+/output
+issues
+output
 next-env.d.ts
+issues
+seed-output.txt
+cookies.txt
